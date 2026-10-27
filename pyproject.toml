@@ -30,7 +30,7 @@ cli = ["typer", "rich"]
 dev = ["pytest", "matplotlib", "bigraph-viz"]
 
 [tool.uv.sources]
-viva-superpowers = { git = "https://github.com/vivarium-collective/pbg-superpowers.git", branch = "main" }
+viva-superpowers = { git = "https://github.com/vivarium-collective/viva-superpowers.git", branch = "main" }
 
 [tool.setuptools.packages.find]
 include = ["pbg_caspule*"]
