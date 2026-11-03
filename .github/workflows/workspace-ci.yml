@@ -9,6 +9,11 @@
 #   vivarium-collective/viva-template/template/.github/workflows/<template>
 # template: workspace-ci.yml.j2
 # sha256: fe8c8f03b54507d76509e9c29e8d6e98ff5d35458278b85bb275df437162ede6
+# divergence: LAMMPS wheel's MPI_Init intermittently aborts the test process
+#   under CI's mpich (flaky "exit code 15"; same commit passes on re-run). The
+#   "Run workspace tests" step retries once on a hard crash. Caspule-specific
+#   (LAMMPS-backed), so kept out of the shared template. Re-sync manually if
+#   workspace-ci.yml.j2 gains unrelated improvements worth adopting.
 # <<< viva-template-provenance <<<
 
 name: workspace-ci
@@ -169,7 +174,18 @@ jobs:
         if: hashFiles('tests/**/*.py') != ''
         run: |
           source .venv/bin/activate
-          pytest tests/ -v --color=yes
+          # The LAMMPS wheel calls MPI_Init when a lammps() instance is built
+          # (every CASPULE composite). Under CI's mpich this init intermittently
+          # aborts the whole pytest process ("exit code 15"), with the identical
+          # commit passing on re-run. A plugin-level retry can't recover a hard
+          # process crash (and pytest-forked + pytest-rerunfailures conflict),
+          # so retry the suite once at the shell level: a transient MPI_Init
+          # abort then passes on the second attempt, while a genuine failure
+          # still fails (twice).
+          pytest tests/ -v --color=yes || {
+            echo "::warning::workspace tests crashed/failed; retrying once (suspected flaky LAMMPS/MPI MPI_Init abort)"
+            pytest tests/ -v --color=yes
+          }
 
       - name: Publish render check (no study would 404)
         run: |
