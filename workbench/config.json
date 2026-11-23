@@ -1,7 +1,6 @@
 {
   "mode": "snapshot",
-  "smsApiBase": "",
   "repo": "https://github.com/vivarium-collective/viva-caspule",
-  "commit": "e977412be7d7de6dc464dae8dc69166fb551fb36",
+  "commit": "26eaee6cf8658d64104fd76aefad17537c37762c",
   "generated_from_ref": "main"
 }
