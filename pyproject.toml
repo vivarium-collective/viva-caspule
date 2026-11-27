@@ -22,7 +22,6 @@ dependencies = [
     "pypdf>=4.0",
     "matplotlib",
     "plotly",
-    "vivarium-workbench",
 ]
 
 [project.optional-dependencies]
